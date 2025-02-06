@@ -1,4 +1,4 @@
-name: On demand build without tests
+name: Load Test - Update 10
 
 on:
   workflow_dispatch:
