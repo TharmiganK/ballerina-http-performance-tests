@@ -55,8 +55,8 @@ jobs:
 
       - name: Check Ballerina version and determine Java version
         run: |
-          BAL_VERSION=$(bal --version | grep -oP '\d+\.\d+\.\d+(\.\d+)?' | head -1)
-          echo JAVA_VERSION=$(echo $BAL_VERSION | awk -F'.' '{print ($3 >= 11) ? 21 : 17}') >> $GITHUB_ENV
+          BAL_VERSION=$(bal --version | awk '/Ballerina / {print $2}')
+          echo JAVA_VERSION=$(echo $BAL_VERSION | awk -F'.' '{print ($2 >= 11) ? 21 : 17}') >> $GITHUB_ENV
           echo "Using Java JAVA_VERSION for Ballerina $BAL_VERSION"
 
       - name: Setup Java
