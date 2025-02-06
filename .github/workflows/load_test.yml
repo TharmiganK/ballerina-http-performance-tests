@@ -51,6 +51,7 @@ jobs:
         run: |
           wget ${{ github.event.inputs.distribution-url }} -O ballerina.zip
           unzip ballerina.zip
+          chmod +x $PWD/${{ github.event.inputs.ballerina-path }}/bal
           echo PATH=$PWD/${{ github.event.inputs.ballerina-path }}:$PATH >> $GITHUB_ENV
 
       - name: Check Ballerina version and determine Java version
