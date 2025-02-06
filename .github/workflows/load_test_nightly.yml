@@ -57,7 +57,8 @@ jobs:
               run: |
                 wget ${{ github.event.inputs.distribution-url }} -O ballerina.zip
                 unzip ballerina.zip
-                export PATH=${{ github.event.inputs.ballerina-path }}:$PATH
+                export PATH=$PWD/${{ github.event.inputs.ballerina-path }}:$PATH
+                bal --version
             
             - name: Setup h2load
               run: |
