@@ -23,6 +23,14 @@ on:
             required: false
             default: '1h'
             type: string
+        distribution-url:
+            description: 'URL of the Ballerina distribution'
+            required: false
+            type: string
+        ballerina-path:
+            description: 'Path to the Ballerina command'
+            required: false
+            type: string
 jobs:
     load-tests:
         name: Run Load Tests
@@ -39,9 +47,17 @@ jobs:
                 java-version: '21'
 
             - name: Setup Ballerina
+              if: ${{ github.event.inputs.distribution-url != null && github.event.inputs.ballerina-path != null }}
               uses: ballerina-platform/setup-ballerina@v1.1.3
               with:
                 version: nightly
+
+            - name: Setup Ballerina from provided URL
+              if: ${{ github.event.inputs.distribution-url != null && github.event.inputs.ballerina-path != null }}
+              run: |
+                wget ${{ github.event.inputs.distribution-url }} -O ballerina.zip
+                unzip ballerina.zip
+                export PATH=${{ github.event.inputs.ballerina-path }}:$PATH
             
             - name: Setup h2load
               run: |
