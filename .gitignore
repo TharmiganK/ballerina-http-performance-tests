@@ -1,0 +1,8 @@
+# Ignore all files in the reports directory
+reports/*
+
+# Ignore load test result file
+load_test_results.md
+
+# Ignore all .DS_Store files
+.DS_Store
