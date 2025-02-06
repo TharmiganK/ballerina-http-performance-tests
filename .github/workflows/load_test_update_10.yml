@@ -6,17 +6,17 @@ on:
         scenarios:
             description: 'Scenarios to run'
             required: false
-            default: '("h1-h1" "h1c-h1c" "h1-h2" "h2-h1" "h1c-h2c" "h2c-h1c" "h2c-h2c" "h2-h2")'
+            default: 'h1-h1,h1c-h1c,h1-h2,h2-h1,h1c-h2c,h2c-h1c,h2c-h2c,h2-h2'
             type: string
         payloads:
             description: 'Payloads to run'
             required: false
-            default: '("500B" "1000B" "10000B")'
+            default: '500B,1000B,10000B'
             type: string
         users:
             description: 'Users to run'
             required: false
-            default: '(100 200 500 1000)'
+            default: '100,200,500,1000'
             type: string
         duration:
             description: 'Duration of the test'

@@ -2,11 +2,14 @@
 
 set -e
 
-# Directories
 BACKEND_DIR="netty-http-transport-sample"
 BALLERINA_DIR="ballerina/passthrough"
 
-BALLERINA_PROJECTS=${BALLERINA_PROJECTS:-("h1-h1" "h1c-h1c" "h1-h2" "h2-h1" "h1c-h2c" "h2c-h1c" "h2c-h2c" "h2-h2")}
+if [ -z "$BALLERINA_PROJECTS" ]; then
+    BALLERINA_PROJECTS=("h1-h1" "h1c-h1c" "h1-h2" "h2-h1" "h1c-h2c" "h2c-h1c" "h2c-h2c" "h2-h2")
+else
+    IFS=',' read -r -a BALLERINA_PROJECTS <<< "$BALLERINA_PROJECTS"
+fi
 
 # Build backend
 echo "Building backend..."

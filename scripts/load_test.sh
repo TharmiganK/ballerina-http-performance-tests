@@ -7,9 +7,24 @@ BALLERINA_DIR="ballerina/passthrough"
 PAYLOADS_DIR="payloads"
 REPORTS_DIR="reports"
 
-SCENARIOS=${SCENARIOS:-("h1-h1" "h1c-h1c" "h1-h2" "h2-h1" "h1c-h2c" "h2c-h1c" "h2c-h2c" "h2-h2")}
-PAYLOADS=${PAYLOADS:-("500B" "1000B" "10000B")}
-CONCURRENCY=${CONCURRENCY: -(100 200 500 1000)}
+if [ -z "$SCENARIOS" ]; then
+    SCENARIOS=("h1-h1" "h1c-h1c" "h1-h2" "h2-h1" "h1c-h2c" "h2c-h1c" "h2c-h2c" "h2-h2")
+else
+    IFS=',' read -r -a SCENARIOS <<< "$SCENARIOS"
+fi
+
+if [ -z "$PAYLOADS" ]; then
+    PAYLOADS=("500B" "1000B" "10000B")
+else
+    IFS=',' read -r -a PAYLOADS <<< "$PAYLOADS"
+fi
+
+if [ -z "$CONCURRENCY" ]; then
+    CONCURRENCY=(100 200 500 1000)
+else
+    IFS=',' read -r -a CONCURRENCY <<< "$CONCURRENCY"
+fi
+
 LOAD_TEST_DURATION="${LOAD_TEST_DURATION:-1h}"
 
 echo "[INFO] Kill any existing backend and Ballerina service"
