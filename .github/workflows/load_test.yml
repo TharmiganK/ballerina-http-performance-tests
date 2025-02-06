@@ -1,0 +1,90 @@
+name: Trigger Load Test
+
+on:
+  workflow_dispatch:
+    inputs:
+      scenarios:
+        description: 'Scenarios to run'
+        required: false
+        default: 'h1-h1,h1c-h1c,h2c-h2c,h2-h2'
+        type: string
+      payloads:
+        description: 'Payloads to run'
+        required: false
+        default: '500B,1000B,10000B'
+        type: string
+      users:
+        description: 'Users to run'
+        required: false
+        default: '100,200,500,1000'
+        type: string
+      duration:
+        description: 'Duration of the test'
+        required: false
+        default: '1h'
+        type: string
+      distribution-url:
+        description: 'URL of the Ballerina distribution'
+        required: false
+        type: string
+      ballerina-path:
+        description: 'Path to the Ballerina command'
+        required: false
+        type: string
+jobs:
+  load-tests:
+    name: Run Load Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 540
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Ballerina
+        if: ${{ github.event.inputs.distribution-url == null && github.event.inputs.ballerina-path == null }}
+        uses: ballerina-platform/setup-ballerina@v1.1.3
+        with:
+          version: nightly
+
+      - name: Setup Ballerina from provided URL
+        if: ${{ github.event.inputs.distribution-url != null && github.event.inputs.ballerina-path != null }}
+        run: |
+          wget ${{ github.event.inputs.distribution-url }} -O ballerina.zip
+          unzip ballerina.zip
+          echo PATH=$PWD/${{ github.event.inputs.ballerina-path }}:$PATH >> $GITHUB_ENV
+
+      - name: Check Ballerina version and determine Java version
+        run: |
+          BAL_VERSION=$(bal --version | grep -oP '\d+\.\d+\.\d+(\.\d+)?' | head -1)
+          echo JAVA_VERSION=$(echo $BAL_VERSION | awk -F'.' '{print ($3 >= 11) ? 21 : 17}') >> $GITHUB_ENV
+          echo "Using Java JAVA_VERSION for Ballerina $BAL_VERSION"
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '${{ env.JAVA_VERSION }}'
+
+      - name: Setup h2load
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y nghttp2-client
+
+      - name: Build backend and Ballerina services
+        run: bash ./scripts/build.sh
+        env:
+          BALLERINA_PROJECTS: ${{ github.event.inputs.scenarios }}
+
+      - name: Run Load Tests
+        run: bash ./scripts/load_test.sh
+        env:
+          SCENARIOS: ${{ github.event.inputs.scenarios }}
+          PAYLOADS: ${{ github.event.inputs.payloads }}
+          CONCURRENCY: ${{ github.event.inputs.users }}
+          LOAD_TEST_DURATION: ${{ github.event.inputs.duration }}
+
+      - name: Create report
+        run: bash ./scripts/report.sh
+
+      - name: Print the report as summary
+        run: cat report.md >> $GITHUB_STEP_SUMMARY
