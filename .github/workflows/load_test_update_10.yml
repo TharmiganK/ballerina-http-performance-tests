@@ -57,7 +57,7 @@ jobs:
               env:
                 SCENARIOS: ${{ github.event.inputs.scenarios }}
                 PAYLOADS: ${{ github.event.inputs.payloads }}
-                USERS: ${{ github.event.inputs.users }}
+                CONCURRENCY: ${{ github.event.inputs.users }}
                 LOAD_TEST_DURATION: ${{ github.event.inputs.duration }}
 
             - name: Create report
