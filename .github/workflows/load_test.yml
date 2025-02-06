@@ -3,6 +3,11 @@ name: Trigger Load Test
 on:
   workflow_dispatch:
     inputs:
+      ballerina-version:
+        description: 'Ballerina version to use'
+        required: false
+        default: 'nightly'
+        type: string
       scenarios:
         description: 'Scenarios to run'
         required: false
@@ -44,7 +49,7 @@ jobs:
         if: ${{ github.event.inputs.distribution-url == null && github.event.inputs.ballerina-path == null }}
         uses: ballerina-platform/setup-ballerina@v1.1.3
         with:
-          version: nightly
+          version: ${{ github.event.inputs.ballerina-version }}
 
       - name: Setup Ballerina from provided URL
         if: ${{ github.event.inputs.distribution-url != null && github.event.inputs.ballerina-path != null }}
