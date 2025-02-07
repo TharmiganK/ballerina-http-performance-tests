@@ -27,7 +27,7 @@ service /passthrough on httpListener {
         do {
             return check nettyEP->forward("/service/EchoService", req);
         } on fail error e {
-            log:printError("Error at h1_h1_passthrough", 'error = e);
+            log:printError("Error at h2_h1_passthrough", 'error = e);
             http:Response res = new;
             res.statusCode = 500;
             res.setPayload(e.message());
