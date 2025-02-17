@@ -43,7 +43,7 @@ jobs:
     timeout-minutes: 540
     strategy:
       matrix:
-        scenario: ${{ github.event.inputs.scenarios }}
+        scenario: ${{ fromJSON(github.event.inputs.scenarios) }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
