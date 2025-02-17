@@ -45,10 +45,10 @@ run_backend() {
     echo "[INFO] Run the netty backend"
     local scenario=$1
     case $scenario in
-        "h1c-h1c"|"h2c-h1c") java -jar "$BACKEND_DIR/target/netty-http-echo-service.jar" & ;;
-        "h1c-h2c"|"h2c-h2c") java -jar "$BACKEND_DIR/target/netty-http-echo-service.jar" --http2 true & ;;
-        "h1-h1"|"h2-h1") java -jar "$BACKEND_DIR/target/netty-http-echo-service.jar" --ssl true --key-store-file ballerina/resources/ballerinaKeystore.p12 --key-store-password ballerina & ;;
-        "h1-h2"|"h2-h2") java -jar "$BACKEND_DIR/target/netty-http-echo-service.jar" --ssl true --http2 true --key-store-file ballerina/resources/ballerinaKeystore.p12 --key-store-password ballerina & ;;
+        "h1c-h1c"|"h2c-h1c") java -Xmx1G -jar "$BACKEND_DIR/target/netty-http-echo-service.jar" & ;;
+        "h1c-h2c"|"h2c-h2c") java -Xmx1G -jar "$BACKEND_DIR/target/netty-http-echo-service.jar" --http2 true & ;;
+        "h1-h1"|"h2-h1") java -Xmx1G -jar "$BACKEND_DIR/target/netty-http-echo-service.jar" --ssl true --key-store-file ballerina/resources/ballerinaKeystore.p12 --key-store-password ballerina & ;;
+        "h1-h2"|"h2-h2") java -Xmx1G -jar "$BACKEND_DIR/target/netty-http-echo-service.jar" --ssl true --http2 true --key-store-file ballerina/resources/ballerinaKeystore.p12 --key-store-password ballerina & ;;
     esac
     sleep 5
     echo ""
@@ -57,7 +57,7 @@ run_backend() {
 run_ballerina_service() {
     local scenario=$1
     echo "[INFO] Run the Ballerina $scenario passthrough service"
-    (cd "$BALLERINA_DIR/$scenario" && java -jar target/bin/service.jar &)
+    (cd "$BALLERINA_DIR/$scenario" && java -Xmx1G -jar target/bin/service.jar &)
     sleep 5
     echo ""
 }
