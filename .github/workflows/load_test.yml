@@ -35,7 +35,7 @@ on:
       ballerina-path:
         description: 'Path to the Ballerina command'
         required: false
-        default: 'ballerina/bin'
+        default: 'ballerina-dist/bin'
         type: string
 jobs:
   load-test:
@@ -59,7 +59,7 @@ jobs:
         if: ${{ github.event.inputs.zipURL != null && github.event.inputs.ballerina-path != null }}
         run: |
           curl -u TharmiganK:${{ secrets.TOKEN }} -L -o ballerina-dist.zip ${{ github.event.inputs.zipURL }}
-          unzip -q ballerina-dist.zip -d ballerina
+          unzip -q ballerina-dist.zip -d ballerina-dist
           chmod +x $PWD/${{ github.event.inputs.ballerina-path }}/bal
           echo PATH=$PWD/${{ github.event.inputs.ballerina-path }}:$PATH >> $GITHUB_ENV
 
