@@ -11,7 +11,7 @@ on:
       scenarios:
         description: 'Scenarios to run'
         required: false
-        default: 'h1-h1,h1c-h1c,h2c-h2c,h2-h2'
+        default: '[h1-h1,h1c-h1c,h2c-h2c,h2-h2]'
         type: string
       payloads:
         description: 'Payloads to run'
@@ -41,6 +41,9 @@ jobs:
     name: Run Load Tests
     runs-on: ubuntu-latest
     timeout-minutes: 540
+    strategy:
+      matrix:
+        scenario: ${{ github.event.inputs.scenarios }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -80,12 +83,12 @@ jobs:
       - name: Build backend and Ballerina services
         run: bash ./scripts/build.sh
         env:
-          BALLERINA_PROJECTS: ${{ github.event.inputs.scenarios }}
+          BALLERINA_PROJECTS: ${{ matrix.scenario }}
 
       - name: Run Load Tests
         run: bash ./scripts/load_test.sh
         env:
-          SCENARIOS: ${{ github.event.inputs.scenarios }}
+          SCENARIOS: ${{ matrix.scenario }}
           PAYLOADS: ${{ github.event.inputs.payloads }}
           CONCURRENCY: ${{ github.event.inputs.users }}
           LOAD_TEST_DURATION: ${{ github.event.inputs.duration }}
