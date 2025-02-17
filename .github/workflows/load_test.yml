@@ -11,7 +11,7 @@ on:
       scenarios:
         description: 'Scenarios to run'
         required: false
-        default: '[h1-h1,h1c-h1c,h2c-h2c,h2-h2]'
+        default: '["h1-h1","h1c-h1c","h2c-h2c","h2-h2"]'
         type: string
       payloads:
         description: 'Payloads to run'
